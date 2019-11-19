@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
-use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\StoreClientRequestApi;
 use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\Admin\ClientResource;
 use Gate;
@@ -18,19 +18,20 @@ class ClientsApiController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('client_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('client_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new ClientResource(Client::all());
     }
 
-    public function store(StoreClientRequest $request)
+    public function store(StoreClientRequestApi $request)
     {
+
         $client = Client::create($request->all());
 
         if ($request->input('avatar', false)) {
             $client->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
-
+        $client['Token'] = $client->createToken('clientToken')->accessToken;
         return (new ClientResource($client))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);

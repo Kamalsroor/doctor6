@@ -1,16 +1,17 @@
 <?php
 
 namespace App;
-
+use Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use Laravel\Passport\HasApiTokens;
 
 class Partner extends Model implements HasMedia
 {
-    use SoftDeletes, HasMediaTrait;
+    use SoftDeletes, HasMediaTrait, HasApiTokens;
 
     public $table = 'partners';
 
@@ -32,6 +33,15 @@ class Partner extends Model implements HasMedia
         'clinic'  => 'دكتور',
         'nurse'   => 'تمريض',
         'medical' => 'مركز تحاليل / اشعه',
+    ];
+
+    const Waiting_Time_SELECT = [
+        '00:15:00'  => '15 دقيقه',
+        '00:20:00'  => '20 دقيقه',
+        '00:30:00'  => '30 دقيقه',
+        '01:00:00'  => '60 دقيقه',
+        '01:15:00'  => '75 دقيقه',
+        '01:30:00'  => '90 دقيقه',
     ];
 
     protected $fillable = [
@@ -63,8 +73,31 @@ class Partner extends Model implements HasMedia
         return $file;
     }
 
+
+    public function setPasswordAttribute($input)
+    {
+        if ($input) {
+            $this->attributes['password'] = app('hash')->needsRehash($input) ? Hash::make($input) : $input;
+        }
+    }
+
     public function specialty()
     {
         return $this->belongsTo(Specialty::class, 'specialty_id');
+    }
+
+    public function Clinic()
+    {
+        return $this->hasOne(Clinic::class, 'partner_id');
+    }
+
+    public function Medical()
+    {
+        return $this->hasOne(Medical::class, 'partner_id');
+    }
+
+    public function Nurse()
+    {
+        return $this->hasOne(Nurse::class, 'partner_id');
     }
 }

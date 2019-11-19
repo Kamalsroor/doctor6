@@ -1,4 +1,8 @@
 <?php
+Route::post('clinte_rgistar',  'Api\V1\Admin\ClientsApiController@store');
+Route::post('partner_rgistar',  'Api\V1\Admin\PartnersApiController@store');
+
+
 
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:api']], function () {
     // Permissions

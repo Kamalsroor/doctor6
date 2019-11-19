@@ -9,6 +9,10 @@ use App\Http\Requests\StorePartnerRequest;
 use App\Http\Requests\UpdatePartnerRequest;
 use App\Partner;
 use App\Specialty;
+use App\Clinic;
+use App\Medical;
+use App\Nurse;
+
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -91,19 +95,52 @@ class PartnersController extends Controller
 
     public function store(StorePartnerRequest $request)
     {
-        $partner = Partner::create($request->all());
-
+        // dd($request);
+        $partner = Partner::create([
+            'name' => $request->name ,
+            'phone' => $request->phone ,
+            'username' => $request->username ,
+            'password' => $request->password ,
+            'type' => $request->type ,
+            'specialty_id' => $request->specialty_id ,
+        ]);
+        // $partner->Clinic->create();
         if ($request->input('avatar', false)) {
             $partner->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
-
-        return redirect()->route('admin.partners.index');
+        if( $request->type == "clinic"){
+            $Clinic = new Clinic([
+                'price' => $request->price ,
+                'address' => $request->address ,
+                'waiting_time' => $request->waiting_time ,
+                'info' => $request->info ,
+                'long' => $request->long ,
+                'lat' => $request->lat ,
+            ]);
+            $partner->Clinic()->save($Clinic);
+        }elseif($request->type == "medical"){
+            $Medical = new Medical([
+                'address' => $request->address ,
+                'waiting_time' => $request->waiting_time ,
+                'info' => $request->info ,
+                'long' => $request->long ,
+                'lat' => $request->lat ,
+            ]);
+                
+            $partner->Medical()->save($Medical);
+        }elseif($request->type == "nurse"){
+            $Nurse = new Nurse([
+                'experience' => $request->experience ,
+                'age' => $request->age ,
+            ]);
+            $partner->Nurse()->save($Nurse);
+        }
+            return redirect()->route('admin.partners.index');
     }
 
     public function edit(Partner $partner)
     {
         abort_if(Gate::denies('partner_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         $specialties = Specialty::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $partner->load('specialty');
@@ -113,7 +150,17 @@ class PartnersController extends Controller
 
     public function update(UpdatePartnerRequest $request, Partner $partner)
     {
-        $partner->update($request->all());
+        if ( $request->password == null) {
+            $request->password = $partner->password;
+        }
+        $partner->update([
+            'name' => $request->name ,
+            'phone' => $request->phone ,
+            'username' => $request->username ,
+            'password' => $request->password ,
+            'type' => $request->type ,
+            'specialty_id' => $request->specialty_id ,
+        ]);
 
         if ($request->input('avatar', false)) {
             if (!$partner->avatar || $request->input('avatar') !== $partner->avatar->file_name) {
@@ -121,6 +168,29 @@ class PartnersController extends Controller
             }
         } elseif ($partner->avatar) {
             $partner->avatar->delete();
+        }
+        if( $request->type == "clinic"){
+            $partner->Clinic()->update([
+                'price' => $request->price ,
+                'address' => $request->address ,
+                'waiting_time' => $request->waiting_time ,
+                'info' => $request->info ,
+                'long' => $request->long ,
+                'lat' => $request->lat ,
+            ]);
+        }elseif($request->type == "medical"){
+            $partner->Medical()->update([
+                'address' => $request->address ,
+                'waiting_time' => $request->waiting_time ,
+                'info' => $request->info ,
+                'long' => $request->long ,
+                'lat' => $request->lat ,
+            ]);
+        }elseif($request->type == "nurse"){
+            $partner->Nurse()->update([
+                'experience' => $request->experience ,
+                'age' => $request->age ,
+            ]);
         }
 
         return redirect()->route('admin.partners.index');

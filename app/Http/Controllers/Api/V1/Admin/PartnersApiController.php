@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
-use App\Http\Requests\StorePartnerRequest;
+use App\Http\Requests\StorePartnerRequestApi;
 use App\Http\Requests\UpdatePartnerRequest;
 use App\Http\Resources\Admin\PartnerResource;
 use App\Partner;
+use App\Specialty;
+use App\Clinic;
+use App\Medical;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,18 +21,52 @@ class PartnersApiController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('partner_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         return new PartnerResource(Partner::with(['specialty'])->get());
     }
 
-    public function store(StorePartnerRequest $request)
+    public function store(StorePartnerRequestApi $request)
     {
-        $partner = Partner::create($request->all());
-
+        // $partner = Partner::create($request->all());
+        $partner = Partner::create([
+            'name' => $request->name ,
+            'phone' => $request->phone ,
+            'username' => $request->username ,
+            'password' => $request->password ,
+            'type' => $request->type ,
+            'specialty_id' => $request->specialty_id ,
+        ]);
         if ($request->input('avatar', false)) {
             $partner->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
+
+        if( $request->type == "clinic"){
+            $Clinic = new Clinic([
+                'price' => $request->price ,
+                'address' => $request->address ,
+                'waiting_time' => $request->waiting_time ,
+                'info' => $request->info ,
+                'long' => $request->long ,
+                'lat' => $request->lat ,
+            ]);
+            $partner->Clinic()->save($Clinic);
+        }elseif($request->type == "medical"){
+            $Medical = new Medical([
+                'address' => $request->address ,
+                'waiting_time' => $request->waiting_time ,
+                'info' => $request->info ,
+                'long' => $request->long ,
+                'lat' => $request->lat ,
+            ]);
+                
+            $partner->Medical()->save($Medical);
+        }elseif($request->type == "nurse"){
+            $Nurse = new Nurse([
+                'experience' => $request->experience ,
+                'age' => $request->age ,
+            ]);
+            $partner->Nurse()->save($Nurse);
+        }
+        $partner['Token'] = $partner->createToken('partnerToken')->accessToken;
 
         return (new PartnerResource($partner))
             ->response()

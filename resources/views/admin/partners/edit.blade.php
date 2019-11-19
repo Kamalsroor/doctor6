@@ -99,6 +99,16 @@
                     </p>
                 @endif
             </div>
+            
+            <div class="form-input-costum">
+            
+            </div>
+            
+            <!-- input untuk menampung koordinat -->    
+            <input type="hidden" name="long" value="" />
+            <input type="hidden" name="lat" value="" />
+            <div id="google-maps" style="height: 400px; width:100%"></div>
+            <br>
             <div>
                 <input class="btn btn-danger" type="submit" value="{{ trans('global.save') }}">
             </div>
@@ -110,6 +120,8 @@
 @endsection
 
 @section('scripts')
+<script src="https://maps.googleapis.com/maps/api/js?key="></script>
+
 <script>
     Dropzone.options.avatarDropzone = {
     url: '{{ route('admin.partners.storeMedia') }}',
@@ -163,5 +175,224 @@
         return _results
     }
 }
+@if($partner->type == "clinic")
+
+
+
+$clinic = `
+    <div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
+        <label for="price">{{ trans('cruds.partner.fields.price') }}*</label>
+        <input type="number" id="price" name="price" class="form-control" value="{{ old('price', isset($partner) ? $partner->Clinic->price : '') }}" required>
+        @if($errors->has('price'))
+            <p class="help-block">
+                {{ $errors->first('price') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.price_helper') }}
+        </p>
+    </div>
+
+    <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
+        <label for="address">{{ trans('cruds.partner.fields.address') }}</label>
+        <textarea name="address" id="address" class="form-control" required>{{ old('price', isset($partner) ? $partner->Clinic->address : '') }}</textarea>
+        @if($errors->has('address'))
+            <p class="help-block">
+                {{ $errors->first('address') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.address_helper') }}
+        </p>
+    </div>
+
+
+    <br>
+
+     <div class="form-group {{ $errors->has('waiting_time') ? 'has-error' : '' }}">
+        <label for="waiting_time">{{ trans('cruds.partner.fields.waiting_time') }}</label>
+        <select id="waiting_time" name="waiting_time" class="form-control">
+            <option value="" disabled {{ old('waiting_time', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+            @foreach(App\Partner::Waiting_Time_SELECT as $key => $label)
+                <option value="{{ $key }}" {{ old('waiting_time', $partner->Clinic->waiting_time) === (string)$key ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </select>
+        @if($errors->has('waiting_time'))
+            <p class="help-block">
+                {{ $errors->first('waiting_time') }}
+            </p>
+        @endif
+    </div>
+
+    <div class="form-group {{ $errors->has('info') ? 'has-error' : '' }}">
+        <label for="info">{{ trans('cruds.partner.fields.info') }}</label>
+        <textarea name="info" id="info" class="form-control" required>{{ old('price', isset($partner) ? $partner->Clinic->info : '') }}</textarea>
+        @if($errors->has('info'))
+            <p class="help-block">
+                {{ $errors->first('info') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.info_helper') }}
+        </p>
+    </div>
+`;
+@endif
+
+$('#google-maps').hide();
+@if($partner->type == "medical")
+
+$medical = `
+    <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
+        <label for="address">{{ trans('cruds.partner.fields.address') }}</label>
+        <textarea name="address" id="address" class="form-control" required>{{ old('address', isset($partner) ? $partner->Medical->address : '') }}</textarea>
+        @if($errors->has('address'))
+            <p class="help-block">
+                {{ $errors->first('address') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.address_helper') }}
+        </p>
+    </div>
+
+
+    <br>
+
+     <div class="form-group {{ $errors->has('waiting_time') ? 'has-error' : '' }}">
+        <label for="waiting_time">{{ trans('cruds.partner.fields.waiting_time') }}</label>
+        <select id="waiting_time" name="waiting_time" class="form-control">
+            <option value="" disabled {{ old('waiting_time', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+            @foreach(App\Partner::Waiting_Time_SELECT as $key => $label)
+                <option value="{{ $key }}" {{ old('waiting_time', $partner->Medical->waiting_time) === (string)$key ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </select>
+        @if($errors->has('waiting_time'))
+            <p class="help-block">
+                {{ $errors->first('waiting_time') }}
+            </p>
+        @endif
+    </div>
+
+    <div class="form-group {{ $errors->has('info') ? 'has-error' : '' }}">
+        <label for="info">{{ trans('cruds.partner.fields.info') }}</label>
+        <textarea name="info" id="info" class="form-control" required>{{ old('info', isset($partner) ? $partner->Medical->info : '') }}</textarea>
+        @if($errors->has('info'))
+            <p class="help-block">
+                {{ $errors->first('info') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.info_helper') }}
+        </p>
+    </div>
+`;
+
+@endif
+@if($partner->type == "nurse")
+
+$nurse = `
+    <div class="form-group {{ $errors->has('experience') ? 'has-error' : '' }}">
+        <label for="experience">{{ trans('cruds.partner.fields.experience') }}</label>
+        <textarea name="experience" id="experience" class="form-control" required>{{ old('experience', isset($partner) ? $partner->Nurse->experience : '') }}</textarea>
+        @if($errors->has('experience'))
+            <p class="help-block">
+                {{ $errors->first('experience') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.experience_helper') }}
+        </p>
+    </div>
+
+    <div class="form-group {{ $errors->has('age') ? 'has-error' : '' }}">
+        <label for="age">{{ trans('cruds.partner.fields.age') }}*</label>
+        <input type="number" id="age" name="age" class="form-control" value="{{ old('age', isset($partner) ? $partner->Nurse->age : '') }}" required>
+        @if($errors->has('age'))
+            <p class="help-block">
+                {{ $errors->first('age') }}
+            </p>
+        @endif
+        <p class="helper-block">
+            {{ trans('cruds.partner.fields.age_helper') }}
+        </p>
+    </div>
+`;
+
+@endif
+
+console.log($('form select[name=type]').val());
+
+if ($('form select[name=type]').val() == 'clinic'){
+$('.form-input-costum').html(' ');
+$('.form-input-costum').append($clinic);
+$('#google-maps').show();
+}else if($('form select[name=type]').val() == 'medical'){
+$('.form-input-costum').html(' ');
+$('.form-input-costum').append($medical)
+$('#google-maps').show();
+}else if($('form select[name=type]').val() == 'nurse'){
+$('.form-input-costum').html(' ');
+$('.form-input-costum').append($nurse)
+$('#google-maps').hide();
+}
+$('form select[name=type]').change(function(){
+  if ($('form select[name=type]').val() == 'clinic'){
+    $('.form-input-costum').html(' ');
+    $('.form-input-costum').append($clinic);
+    $('#google-maps').show();
+  }else if($('form select[name=type]').val() == 'medical'){
+    $('.form-input-costum').html(' ');
+    $('.form-input-costum').append($medical)
+    $('#google-maps').show();
+  }else if($('form select[name=type]').val() == 'nurse'){
+    $('.form-input-costum').html(' ');
+    $('.form-input-costum').append($nurse)
+    $('#google-maps').hide();
+  }
+});
+
+
+
+
+    // variabel global marker
+    var marker;
+    function taruhMarker(peta, posisiTitik) {
+        if (marker) {
+            // pindahkan marker
+            marker.setPosition(posisiTitik);
+        } else {
+            // buat marker baru
+            marker = new google.maps.Marker({
+                position: posisiTitik,
+                map: peta,
+            });
+        }
+        // a    marnimasi sekali
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            marker.setAnimation(null);
+        }, 750);
+        // kirim nilai koordinat ke input
+        $("input[name=long]").val(posisiTitik.lat());
+        $("input[name=lat]").val(posisiTitik.lng());
+        console.log($("input[name=long]").val() + "," + $("input[name=lat]").val());
+    }
+    function initialize() {
+        var propertiPeta = {
+            center: new google.maps.LatLng(30.038837494000774,31.235579192634532),
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var peta = new google.maps.Map(document.getElementById("google-maps"), propertiPeta);
+        // even listner ketika peta diklik
+        google.maps.event.addListener(peta, 'click', function(event) {
+            taruhMarker(this, event.latLng);
+        });
+        // marker.setMap(peta);
+    }
+    // event jendela di-load
+    google.maps.event.addDomListener(window, 'load', initialize);
+
 </script>
 @stop
