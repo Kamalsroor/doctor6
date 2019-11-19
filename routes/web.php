@@ -9,6 +9,12 @@ Route::get('/home', function () {
     return redirect()->route('admin.home');
 });
 
+Route::get('/migrate', function() {
+    Artisan::call('migrate:fresh');
+    Artisan::call('db:seed');
+    // return what you want
+    return 'تم بنجاح';
+});
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
