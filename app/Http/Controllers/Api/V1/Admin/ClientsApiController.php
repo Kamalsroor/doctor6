@@ -23,6 +23,20 @@ class ClientsApiController extends Controller
         return new ClientResource(Client::all());
     }
 
+    public function login(){ 
+        if(Client::attempt(['email' => request('email'), 'password' => request('password')])){ 
+            dd('test');
+            $user = Auth::user();
+
+            $success['token'] =  $user->createToken('MyApp')->accessToken; 
+            return response()->json(['success' => $success], $this->successStatus); 
+        } 
+        else{ 
+            return response()->json(['error'=>'Unauthorised'], 401); 
+        } 
+    }
+
+    
     public function store(StoreClientRequestApi $request)
     {
 

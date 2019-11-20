@@ -59,6 +59,22 @@ class Client extends Model implements HasMedia
         $this->addMediaConversion('thumb')->width(50)->height(50);
     }
 
+    public function findForPassport($email)
+    {
+        return $this->where('email', $email)->first();
+    }
+
+        /**
+    * Validate the password of the user for the Passport password grant.
+    *
+    * @param  string $password
+    * @return bool
+    */
+    public function validateForPassportPasswordGrant($password)
+    {
+        return Hash::check($password, $this->password);
+    }
+
     public function pharmacies()
     {
         return $this->hasMany(Pharmacy::class, 'client_id', 'id');
