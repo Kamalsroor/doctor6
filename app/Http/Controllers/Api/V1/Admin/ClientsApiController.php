@@ -27,7 +27,6 @@ class ClientsApiController extends Controller
     {
 
         $client = Client::create($request->all());
-
         if ($request->input('avatar', false)) {
             $client->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
