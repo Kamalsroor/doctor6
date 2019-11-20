@@ -16,6 +16,10 @@ class CreatePharmaciesTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
+            
+            $table->unsignedInteger('client_id');
+
+            $table->foreign('client_id', 'client_fk_624268')->references('id')->on('clients');
         });
     }
 }
