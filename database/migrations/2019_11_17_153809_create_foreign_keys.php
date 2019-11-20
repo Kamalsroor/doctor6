@@ -13,11 +13,6 @@ class CreateForeignKeys extends Migration {
 						->onDelete('cascade')
 						->onUpdate('no action');
 		});
-		Schema::table('partners', function(Blueprint $table) {
-			$table->foreign('specialty_id')->references('id')->on('specialties')
-						->onDelete('cascade')
-						->onUpdate('no action');
-		});
 		Schema::table('workdays', function(Blueprint $table) {
 			$table->foreign('partner_id')->references('id')->on('partners')
 						->onDelete('cascade')
@@ -53,20 +48,12 @@ class CreateForeignKeys extends Migration {
 						->onDelete('cascade')
 						->onUpdate('no action');
 		});
-		Schema::table('pharmacies', function(Blueprint $table) {
-			$table->foreign('client_id')->references('id')->on('clients')
-						->onDelete('cascade')
-						->onUpdate('no action');
-		});
 	}
 
 	public function down()
 	{
 		Schema::table('clinics', function(Blueprint $table) {
 			$table->dropForeign('clinics_partner_id_foreign');
-		});
-		Schema::table('partners', function(Blueprint $table) {
-			$table->dropForeign('partners_specialty_id_foreign');
 		});
 		Schema::table('workdays', function(Blueprint $table) {
 			$table->dropForeign('workdays_partner_id_foreign');
@@ -88,9 +75,6 @@ class CreateForeignKeys extends Migration {
 		});
 		Schema::table('nurses', function(Blueprint $table) {
 			$table->dropForeign('nurses_partner_id_foreign');
-		});
-		Schema::table('pharmacies', function(Blueprint $table) {
-			$table->dropForeign('pharmacies_client_id_foreign');
 		});
 	}
 }
