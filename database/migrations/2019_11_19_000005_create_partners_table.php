@@ -26,7 +26,6 @@ class CreatePartnersTable extends Migration
             $table->softDeletes();
 
             $table->unsignedInteger('specialty_id')->nullable();
-            $table->foreign('specialty_id', 'specialty_fk_624198')->references('id')->on('specialties');
         });
     }
 }
