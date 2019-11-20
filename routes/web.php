@@ -21,7 +21,7 @@ Route::get('/link', function () {
     return 'تم بنجاح';
 });
 
-Route::get('/link', function () {
+Route::get('/passport', function () {
     Artisan::call('passport:install');
     return 'تم بنجاح';
 });
