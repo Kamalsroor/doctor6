@@ -15,6 +15,11 @@ Route::get('/migrate', function() {
     // return what you want
     return 'تم بنجاح';
 });
+
+Route::get('/link', function () {
+    Artisan::call('storage:link');
+    return 'تم بنجاح';
+});
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
