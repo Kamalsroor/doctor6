@@ -24,8 +24,6 @@ class CreatePartnersTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
-
-            $table->unsignedInteger('specialty_id')->nullable();
         });
     }
 }

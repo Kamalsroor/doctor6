@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Client;
+use Str;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\StoreClientRequestApi;
@@ -10,8 +11,9 @@ use App\Http\Requests\UpdateClientRequest;
 use App\Http\Resources\Admin\ClientResource;
 use Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-
+use Hash;
 class ClientsApiController extends Controller
 {
     use MediaUploadingTrait;
@@ -19,17 +21,26 @@ class ClientsApiController extends Controller
     public function index()
     {
         // abort_if(Gate::denies('client_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         return new ClientResource(Client::all());
     }
-
-    public function login(){ 
-        if(Client::attempt(['email' => request('email'), 'password' => request('password')])){ 
-            dd('test');
-            $user = Auth::user();
-
-            $success['token'] =  $user->createToken('MyApp')->accessToken; 
-            return response()->json(['success' => $success], $this->successStatus); 
+    /*
+    * Undocumented function
+    *
+    * @return void
+    */
+    public function login(Request $Request){ 
+        $Client  = Client::where('email' , $Request->email)->get();
+        if(count($Client) > 0 && count($Client) < 2 ){ 
+            // dd($Client[0]->password);
+            if( ! Hash::check( $Client[0]->password , $Request->password ) ){
+                $Client = $Client[0];
+                // $Client['token'] =  $Client->createToken('clientToken')->accessToken; 
+                return (new ClientResource($Client))
+                ->response()
+                ->setStatusCode(Response::HTTP_CREATED);
+            }else{ 
+                return response()->json(['error'=>'Unauthorised'], 401); 
+            } 
         } 
         else{ 
             return response()->json(['error'=>'Unauthorised'], 401); 
@@ -39,12 +50,14 @@ class ClientsApiController extends Controller
     
     public function store(StoreClientRequestApi $request)
     {
-
+        $request->api_token = Str::random(60);
+        // dd($request->api_token);
         $client = Client::create($request->all());
         if ($request->input('avatar', false)) {
             $client->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
-        $client['Token'] = $client->createToken('clientToken')->accessToken;
+        $client->api_token = $request->api_token;
+        $client->save();
         return (new ClientResource($client))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);

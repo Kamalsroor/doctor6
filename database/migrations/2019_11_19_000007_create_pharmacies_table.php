@@ -16,9 +16,6 @@ class CreatePharmaciesTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
-            
-            $table->unsignedInteger('client_id');
-
         });
     }
 }

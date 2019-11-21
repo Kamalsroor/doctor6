@@ -9,7 +9,7 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Laravel\Passport\HasApiTokens;
-
+use Hash;
 class Client extends Model implements HasMedia
 {
     use SoftDeletes, HasMediaTrait, HasApiTokens;
@@ -52,6 +52,8 @@ class Client extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'date_of_birth',
+        'api_token',
+
     ];
 
     public function registerMediaConversions(Media $media = null)
@@ -88,6 +90,13 @@ class Client extends Model implements HasMedia
     public function setDateOfBirthAttribute($value)
     {
         $this->attributes['date_of_birth'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function setPasswordAttribute($input)
+    {
+        if ($input) {
+            $this->attributes['password'] = app('hash')->needsRehash($input) ? Hash::make($input) : $input;
+        }
     }
 
     public function getAvatarAttribute()

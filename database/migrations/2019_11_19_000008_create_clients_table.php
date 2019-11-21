@@ -36,6 +36,7 @@ class CreateClientsTable extends Migration
             $table->string('lat')->nullable();
 
             $table->timestamps();
+            $table->string('api_token', 60)->unique()->nullable()->default(null);
 
             $table->softDeletes();
         });
