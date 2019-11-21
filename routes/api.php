@@ -4,7 +4,9 @@ Route::post('partner_rgistar',  'Api\V1\Admin\PartnersApiController@store');
 Route::post('clinte_login',  'Api\V1\Admin\ClientsApiController@login');
 Route::post('partner_login',  'Api\V1\Admin\PartnersApiController@login');
 
-
+Route::group(['prefix' => 'doctor', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:api']], function () {
+    Route::apiResource('specialties', 'SpecialtiesApiController');
+});
 
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:api']], function () {
     // Permissions
