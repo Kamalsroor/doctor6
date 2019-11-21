@@ -37,6 +37,7 @@ class ClientsApiController extends Controller
         if (isset($Request->email)) {
             $Client  = Client::where('email' , $Request->email)->get();
         }
+        dd('test');
         if(count($Client) > 0 && count($Client) < 2 ){
             if (isset($Request->password)) {
                 if( ! Hash::check( $Client[0]->password , $Request->password ) ){
