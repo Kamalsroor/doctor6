@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Barryvdh\LaravelIdeHelper\Eloquent;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,6 +14,7 @@ use Hash;
 
 /**
  * @method static where(string $string, $email)
+ * @mixin \Eloquent
  */
 class Client extends Model implements HasMedia
 {

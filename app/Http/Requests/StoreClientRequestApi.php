@@ -12,6 +12,11 @@ use Gate;
 class StoreClientRequestApi extends FormRequest
 {
     /**
+     * @var string
+     */
+    public $api_token;
+
+    /**
      * @return bool
      */
     public function authorize()

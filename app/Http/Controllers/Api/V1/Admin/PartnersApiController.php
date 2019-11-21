@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Client;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\StorePartnerRequestApi;
 use App\Http\Requests\UpdatePartnerRequest;
+use App\Http\Resources\Admin\ClientResource;
 use App\Http\Resources\Admin\PartnerResource;
 use App\Partner;
 use App\Clinic;
 use App\Medical;
 use Gate;
+use Hash;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Str;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,11 +39,10 @@ class PartnersApiController extends Controller
      * Undocumented function
      *
      * @param StorePartnerRequestApi $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(StorePartnerRequestApi $request)
     {
-        // $partner = Partner::create($request->all());
         $partner = Partner::create([
             'name' => $request->name ,
             'phone' => $request->phone ,
@@ -83,6 +88,34 @@ class PartnersApiController extends Controller
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+
+    /**
+     * @param Request $Request
+     * @return JsonResponse
+     */
+    public function login(Request $Request){
+
+        if (isset($Request->username)) {
+            $Partner  = Partner::where('username' , $Request->username)->get();
+        }else{
+            return response()->json(['error'=>'Unauthorised'], 401);
+        }
+        if(count($Partner) > 0 && count($Partner) < 2 ){
+            if (isset($Request->password)) {
+                if( ! Hash::check( $Partner[0]->password , $Request->password ) ){
+                    $Partner = $Partner[0];
+                    return (new ClientResource($Partner))
+                        ->response()
+                        ->setStatusCode(Response::HTTP_CREATED);
+                }else{
+                    return response()->json(['error'=>'Unauthorised'], 401);
+                }
+            }
+        }
+        else{
+            return response()->json(['error'=>'Unauthorised'], 401);
+        }
+    }
     /**
      * @param Partner $partner
      * @return PartnerResource
@@ -97,7 +130,7 @@ class PartnersApiController extends Controller
     /**
      * @param UpdatePartnerRequest $request
      * @param Partner $partner
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist
      * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist
      * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig

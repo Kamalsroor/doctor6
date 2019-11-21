@@ -12,6 +12,7 @@ use Laravel\Passport\HasApiTokens;
 /**
  * Class Partner
  * @package App
+ * @method static create(array $array)
  */
 class Partner extends Model implements HasMedia
 {
@@ -61,6 +62,8 @@ class Partner extends Model implements HasMedia
         'api_token',
 
     ];
+
+
 
     /**
      * @param Media|null $media

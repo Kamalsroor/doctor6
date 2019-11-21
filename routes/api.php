@@ -2,6 +2,7 @@
 Route::post('clinte_rgistar',  'Api\V1\Admin\ClientsApiController@store');
 Route::post('partner_rgistar',  'Api\V1\Admin\PartnersApiController@store');
 Route::post('clinte_login',  'Api\V1\Admin\ClientsApiController@login');
+Route::post('partner_login',  'Api\V1\Admin\PartnersApiController@login');
 
 
 

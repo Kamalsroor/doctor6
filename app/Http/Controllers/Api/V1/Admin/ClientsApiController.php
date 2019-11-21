@@ -6,6 +6,9 @@ use App\Client;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
+use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 use Str;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
@@ -16,6 +19,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Hash;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ClientsApiController
@@ -30,17 +34,19 @@ class ClientsApiController extends Controller
      * @return JsonResponse
      */
     public function login(Request $Request){
-        $Client  = Client::where('email' , $Request->email)->get();
+        if (isset($Request->email)) {
+            $Client  = Client::where('email' , $Request->email)->get();
+        }
         if(count($Client) > 0 && count($Client) < 2 ){
-            // dd($Client[0]->password);
-            if( ! Hash::check( $Client[0]->password , $Request->password ) ){
-                $Client = $Client[0];
-                // $Client['token'] =  $Client->createToken('clientToken')->accessToken;
-                return (new ClientResource($Client))
-                ->response()
-                ->setStatusCode(Response::HTTP_CREATED);
-            }else{
-                return response()->json(['error'=>'Unauthorised'], 401);
+            if (isset($Request->password)) {
+                if( ! Hash::check( $Client[0]->password , $Request->password ) ){
+                    $Client = $Client[0];
+                    return (new ClientResource($Client))
+                    ->response()
+                    ->setStatusCode(Response::HTTP_CREATED);
+                }else{
+                    return response()->json(['error'=>'Unauthorised'], 401);
+                }
             }
         }
         else{
@@ -52,6 +58,9 @@ class ClientsApiController extends Controller
     /**
      * @param StoreClientRequestApi $request
      * @return JsonResponse
+     * @throws DiskDoesNotExist
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
      */
     public function store(StoreClientRequestApi $request)
     {
@@ -81,13 +90,15 @@ class ClientsApiController extends Controller
      * @param UpdateClientRequest $request
      * @param Client $client
      * @return JsonResponse
-     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist
-     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist
-     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig
+     * @throws DiskDoesNotExist
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
      */
     public function update(UpdateClientRequest $request, Client $client)
     {
-        $client->update($request->all());
+        if (!empty($request)) {
+            $client->update($request->all());
+        }
 
         if ($request->input('avatar', false)) {
             if (!$client->avatar || $request->input('avatar') !== $client->avatar->file_name) {
