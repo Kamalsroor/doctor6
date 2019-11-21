@@ -47,7 +47,7 @@ return [
             'hash'     => false,
         ],
         'partner' => [
-            'driver' => 'passport',
+            'driver' => 'token',
             'provider' => 'partners',
         ],
     ],
