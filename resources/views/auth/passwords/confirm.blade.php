@@ -49,7 +49,7 @@
                 @csrf
 
                 <div class="input-group">
-                    <input id="password" type="password" name="password" class="form-control" placeholder="{{ __('Confirm Password') }}" required>
+                    <label for="password"></label><input id="password" type="password" name="password" class="form-control" placeholder="{{ __('Confirm Password') }}" required>
 
                     <div class="input-group-append">
                         <button type="submit" class="btn">

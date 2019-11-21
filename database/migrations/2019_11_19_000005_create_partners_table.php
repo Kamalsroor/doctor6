@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Class CreatePartnersTable
+ */
 class CreatePartnersTable extends Migration
 {
     public function up()
@@ -20,6 +23,8 @@ class CreatePartnersTable extends Migration
             $table->string('password');
 
             $table->string('type')->nullable();
+
+            $table->string('api_token', 60)->unique()->nullable()->default(null);
 
             $table->timestamps();
 

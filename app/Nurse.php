@@ -4,11 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-// use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\Models\Media;
 
-class Nurse extends Model 
+// use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+
+/**
+ * Class Nurse
+ * @package App
+ */
+class Nurse extends Model
 {
     use SoftDeletes;
 

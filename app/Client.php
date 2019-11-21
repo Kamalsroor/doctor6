@@ -10,6 +10,10 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Laravel\Passport\HasApiTokens;
 use Hash;
+
+/**
+ * @method static where(string $string, $email)
+ */
 class Client extends Model implements HasMedia
 {
     use SoftDeletes, HasMediaTrait, HasApiTokens;
@@ -56,11 +60,20 @@ class Client extends Model implements HasMedia
 
     ];
 
+
+    /**
+     * @param Media|null $media
+     * @throws \Spatie\Image\Exceptions\InvalidManipulation
+     */
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')->width(50)->height(50);
     }
 
+    /**
+     * @param $email
+     * @return mixed
+     */
     public function findForPassport($email)
     {
         return $this->where('email', $email)->first();
@@ -77,21 +90,34 @@ class Client extends Model implements HasMedia
         return Hash::check($password, $this->password);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function pharmacies()
     {
         return $this->hasMany(Pharmacy::class, 'client_id', 'id');
     }
 
+    /**
+     * @param $value
+     * @return string|null
+     */
     public function getDateOfBirthAttribute($value)
     {
         return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
     }
 
+    /**
+     * @param $value
+     */
     public function setDateOfBirthAttribute($value)
     {
         $this->attributes['date_of_birth'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 
+    /**
+     * @param $input
+     */
     public function setPasswordAttribute($input)
     {
         if ($input) {
@@ -99,6 +125,9 @@ class Client extends Model implements HasMedia
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getAvatarAttribute()
     {
         $file = $this->getMedia('avatar')->last();

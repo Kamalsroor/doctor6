@@ -2,14 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Client;
 use Gate;
 // use Illuminate\Foundation\Http\FormRequest;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\FormRequest;
 
+/**
+ * Class StoreClientRequestApi
+ * @package App\Http\Requests
+ */
 class StoreClientRequestApi extends FormRequest
 {
+    /**
+     * @return bool
+     */
     public function authorize()
     {
         // abort_if(Gate::denies('client_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -17,6 +21,9 @@ class StoreClientRequestApi extends FormRequest
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function rules()
     {
         return [

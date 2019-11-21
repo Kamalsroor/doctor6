@@ -5,6 +5,10 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Specialty
+ * @package App
+ */
 class Specialty extends Model
 {
     use SoftDeletes;
@@ -24,6 +28,9 @@ class Specialty extends Model
         'deleted_at',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function partners()
     {
         return $this->hasMany(Partner::class, 'specialty_id', 'id');

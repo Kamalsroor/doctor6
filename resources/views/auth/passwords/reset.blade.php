@@ -21,7 +21,7 @@
 
                 <div>
                     <div class="form-group">
-                        <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus placeholder="{{ trans('global.login_email') }}">
+                        <label for="email"></label><input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus placeholder="{{ trans('global.login_email') }}">
 
                         @if($errors->has('email'))
                             <span class="text-danger">
@@ -30,7 +30,7 @@
                         @endif
                     </div>
                     <div class="form-group">
-                        <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required placeholder="{{ trans('global.login_password') }}">
+                        <label for="password"></label><input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required placeholder="{{ trans('global.login_password') }}">
 
                         @if($errors->has('password'))
                             <span class="text-danger">
@@ -39,7 +39,7 @@
                         @endif
                     </div>
                     <div class="form-group">
-                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required placeholder="{{ trans('global.login_password_confirmation') }}">
+                        <label for="password-confirm"></label><input id="password-confirm" type="password" class="form-control" name="password_confirmation" required placeholder="{{ trans('global.login_password_confirmation') }}">
                     </div>
                 </div>
                 <div class="row">

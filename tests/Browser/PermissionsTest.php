@@ -2,15 +2,19 @@
 
 namespace Tests\Browser;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use App\User;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
+/**
+ * Class PermissionsTest
+ * @package Tests\Browser
+ */
 class PermissionsTest extends DuskTestCase
 {
     public function testIndex()
     {
-        $admin = \App\User::find(1);
+        $admin = User::find(1);
         $this->browse(function (Browser $browser) use ($admin) {
             $browser->loginAs($admin);
             $browser->visit(route('admin.permissions.index'));

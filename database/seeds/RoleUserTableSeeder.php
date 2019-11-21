@@ -3,6 +3,9 @@
 use App\User;
 use Illuminate\Database\Seeder;
 
+/**
+ * Class RoleUserTableSeeder
+ */
 class RoleUserTableSeeder extends Seeder
 {
     public function run()

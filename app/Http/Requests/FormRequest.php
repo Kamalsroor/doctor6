@@ -5,6 +5,11 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest as LaravelFormRequest;
+
+/**
+ * Class FormRequest
+ * @package App\Http\Requests
+ */
 abstract class FormRequest extends LaravelFormRequest
 {
     /**
@@ -22,10 +27,9 @@ abstract class FormRequest extends LaravelFormRequest
     /**
      * Handle a failed validation attempt.
      *
-     * @param  \Illuminate\Contracts\Validation\Validator $validator
+     * @param Validator $validator
      * @return void
      *
-     * @throws \Illuminate\Validation\ValidationException
      */
     protected function failedValidation(Validator $validator)
     {

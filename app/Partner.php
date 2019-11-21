@@ -9,6 +9,10 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Laravel\Passport\HasApiTokens;
 
+/**
+ * Class Partner
+ * @package App
+ */
 class Partner extends Model implements HasMedia
 {
     use SoftDeletes, HasMediaTrait, HasApiTokens;
@@ -54,13 +58,22 @@ class Partner extends Model implements HasMedia
         'updated_at',
         'deleted_at',
         'specialty_id',
+        'api_token',
+
     ];
 
+    /**
+     * @param Media|null $media
+     * @throws \Spatie\Image\Exceptions\InvalidManipulation
+     */
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')->width(50)->height(50);
     }
 
+    /**
+     * @return mixed
+     */
     public function getAvatarAttribute()
     {
         $file = $this->getMedia('avatar')->last();
@@ -73,7 +86,9 @@ class Partner extends Model implements HasMedia
         return $file;
     }
 
-
+    /**
+     * @param $input
+     */
     public function setPasswordAttribute($input)
     {
         if ($input) {
@@ -81,21 +96,33 @@ class Partner extends Model implements HasMedia
         }
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function specialty()
     {
         return $this->belongsTo(Specialty::class, 'specialty_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function Clinic()
     {
         return $this->hasOne(Clinic::class, 'partner_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function Medical()
     {
         return $this->hasOne(Medical::class, 'partner_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function Nurse()
     {
         return $this->hasOne(Nurse::class, 'partner_id');

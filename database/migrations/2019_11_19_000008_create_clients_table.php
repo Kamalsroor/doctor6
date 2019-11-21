@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Class CreateClientsTable
+ */
 class CreateClientsTable extends Migration
 {
     public function up()
@@ -35,8 +38,9 @@ class CreateClientsTable extends Migration
 
             $table->string('lat')->nullable();
 
-            $table->timestamps();
             $table->string('api_token', 60)->unique()->nullable()->default(null);
+
+            $table->timestamps();
 
             $table->softDeletes();
         });

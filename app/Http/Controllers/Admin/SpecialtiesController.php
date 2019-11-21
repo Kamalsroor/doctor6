@@ -12,8 +12,17 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
+/**
+ * Class SpecialtiesController
+ * @package App\Http\Controllers\Admin
+ */
 class SpecialtiesController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -53,6 +62,9 @@ class SpecialtiesController extends Controller
         return view('admin.specialties.index');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         abort_if(Gate::denies('specialty_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -60,6 +72,10 @@ class SpecialtiesController extends Controller
         return view('admin.specialties.create');
     }
 
+    /**
+     * @param StoreSpecialtyRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreSpecialtyRequest $request)
     {
         $specialty = Specialty::create($request->all());
@@ -67,6 +83,10 @@ class SpecialtiesController extends Controller
         return redirect()->route('admin.specialties.index');
     }
 
+    /**
+     * @param Specialty $specialty
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Specialty $specialty)
     {
         abort_if(Gate::denies('specialty_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -74,6 +94,11 @@ class SpecialtiesController extends Controller
         return view('admin.specialties.edit', compact('specialty'));
     }
 
+    /**
+     * @param UpdateSpecialtyRequest $request
+     * @param Specialty $specialty
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(UpdateSpecialtyRequest $request, Specialty $specialty)
     {
         $specialty->update($request->all());
@@ -81,6 +106,10 @@ class SpecialtiesController extends Controller
         return redirect()->route('admin.specialties.index');
     }
 
+    /**
+     * @param Specialty $specialty
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show(Specialty $specialty)
     {
         abort_if(Gate::denies('specialty_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -88,6 +117,11 @@ class SpecialtiesController extends Controller
         return view('admin.specialties.show', compact('specialty'));
     }
 
+    /**
+     * @param Specialty $specialty
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy(Specialty $specialty)
     {
         abort_if(Gate::denies('specialty_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -97,6 +131,10 @@ class SpecialtiesController extends Controller
         return back();
     }
 
+    /**
+     * @param MassDestroySpecialtyRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function massDestroy(MassDestroySpecialtyRequest $request)
     {
         Specialty::whereIn('id', request('ids'))->delete();

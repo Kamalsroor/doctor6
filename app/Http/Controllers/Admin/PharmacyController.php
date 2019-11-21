@@ -14,10 +14,19 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
+/**
+ * Class PharmacyController
+ * @package App\Http\Controllers\Admin
+ */
 class PharmacyController extends Controller
 {
     use MediaUploadingTrait;
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -80,6 +89,9 @@ class PharmacyController extends Controller
         return view('admin.pharmacies.index');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         abort_if(Gate::denies('pharmacy_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -89,6 +101,10 @@ class PharmacyController extends Controller
         return view('admin.pharmacies.create', compact('clients'));
     }
 
+    /**
+     * @param StorePharmacyRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StorePharmacyRequest $request)
     {
         $pharmacy = Pharmacy::create($request->all());
@@ -100,6 +116,10 @@ class PharmacyController extends Controller
         return redirect()->route('admin.pharmacies.index');
     }
 
+    /**
+     * @param Pharmacy $pharmacy
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Pharmacy $pharmacy)
     {
         abort_if(Gate::denies('pharmacy_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -111,6 +131,14 @@ class PharmacyController extends Controller
         return view('admin.pharmacies.edit', compact('clients', 'pharmacy'));
     }
 
+    /**
+     * @param UpdatePharmacyRequest $request
+     * @param Pharmacy $pharmacy
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig
+     */
     public function update(UpdatePharmacyRequest $request, Pharmacy $pharmacy)
     {
         $pharmacy->update($request->all());
@@ -134,6 +162,10 @@ class PharmacyController extends Controller
         return redirect()->route('admin.pharmacies.index');
     }
 
+    /**
+     * @param Pharmacy $pharmacy
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show(Pharmacy $pharmacy)
     {
         abort_if(Gate::denies('pharmacy_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -143,6 +175,11 @@ class PharmacyController extends Controller
         return view('admin.pharmacies.show', compact('pharmacy'));
     }
 
+    /**
+     * @param Pharmacy $pharmacy
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy(Pharmacy $pharmacy)
     {
         abort_if(Gate::denies('pharmacy_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -152,6 +189,10 @@ class PharmacyController extends Controller
         return back();
     }
 
+    /**
+     * @param MassDestroyPharmacyRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function massDestroy(MassDestroyPharmacyRequest $request)
     {
         Pharmacy::whereIn('id', request('ids'))->delete();

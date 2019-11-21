@@ -8,22 +8,33 @@ use App\Http\Requests\StorePartnerRequestApi;
 use App\Http\Requests\UpdatePartnerRequest;
 use App\Http\Resources\Admin\PartnerResource;
 use App\Partner;
-use App\Specialty;
 use App\Clinic;
 use App\Medical;
 use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class PartnersApiController
+ * @package App\Http\Controllers\Api\V1\Admin
+ */
 class PartnersApiController extends Controller
 {
     use MediaUploadingTrait;
 
+    /**
+     * @return PartnerResource
+     */
     public function index()
     {
         return new PartnerResource(Partner::with(['specialty'])->get());
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param StorePartnerRequestApi $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(StorePartnerRequestApi $request)
     {
         // $partner = Partner::create($request->all());
@@ -38,7 +49,6 @@ class PartnersApiController extends Controller
         if ($request->input('avatar', false)) {
             $partner->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
-
         if( $request->type == "clinic"){
             $Clinic = new Clinic([
                 'price' => $request->price ,
@@ -57,7 +67,7 @@ class PartnersApiController extends Controller
                 'long' => $request->long ,
                 'lat' => $request->lat ,
             ]);
-                
+
             $partner->Medical()->save($Medical);
         }elseif($request->type == "nurse"){
             $Nurse = new Nurse([
@@ -66,13 +76,17 @@ class PartnersApiController extends Controller
             ]);
             $partner->Nurse()->save($Nurse);
         }
-        $partner['Token'] = $partner->createToken('partnerToken')->accessToken;
-
+        $partner->api_token = Str::random(60);
+        $partner->save();
         return (new PartnerResource($partner))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
+    /**
+     * @param Partner $partner
+     * @return PartnerResource
+     */
     public function show(Partner $partner)
     {
         abort_if(Gate::denies('partner_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -80,6 +94,14 @@ class PartnersApiController extends Controller
         return new PartnerResource($partner->load(['specialty']));
     }
 
+    /**
+     * @param UpdatePartnerRequest $request
+     * @param Partner $partner
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig
+     */
     public function update(UpdatePartnerRequest $request, Partner $partner)
     {
         $partner->update($request->all());
@@ -97,6 +119,11 @@ class PartnersApiController extends Controller
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 
+    /**
+     * @param Partner $partner
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Exception
+     */
     public function destroy(Partner $partner)
     {
         abort_if(Gate::denies('partner_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');

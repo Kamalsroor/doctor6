@@ -8,6 +8,10 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 
+/**
+ * Class Pharmacy
+ * @package App
+ */
 class Pharmacy extends Model implements HasMedia
 {
     use SoftDeletes, HasMediaTrait;
@@ -32,16 +36,26 @@ class Pharmacy extends Model implements HasMedia
         'deleted_at',
     ];
 
+    /**
+     * @param Media|null $media
+     * @throws \Spatie\Image\Exceptions\InvalidManipulation
+     */
     public function registerMediaConversions(Media $media = null)
     {
         $this->addMediaConversion('thumb')->width(50)->height(50);
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function getFileAttribute()
     {
         return $this->getMedia('file');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function client()
     {
         return $this->belongsTo(Client::class, 'client_id');

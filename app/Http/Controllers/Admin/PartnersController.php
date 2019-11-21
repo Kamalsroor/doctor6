@@ -13,15 +13,27 @@ use App\Clinic;
 use App\Medical;
 use App\Nurse;
 
+use Exception;
 use Gate;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
+/**
+ * Class PartnersController
+ * @package App\Http\Controllers\Admin
+ */
 class PartnersController extends Controller
 {
     use MediaUploadingTrait;
 
+    /**
+     * @param Request $request
+     * @return Factory|View
+     * @throws Exception
+     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -84,6 +96,9 @@ class PartnersController extends Controller
         return view('admin.partners.index');
     }
 
+    /**
+     * @return Factory|View
+     */
     public function create()
     {
         abort_if(Gate::denies('partner_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -93,6 +108,10 @@ class PartnersController extends Controller
         return view('admin.partners.create', compact('specialties'));
     }
 
+    /**
+     * @param StorePartnerRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StorePartnerRequest $request)
     {
         // dd($request);
@@ -126,7 +145,7 @@ class PartnersController extends Controller
                 'long' => $request->long ,
                 'lat' => $request->lat ,
             ]);
-                
+
             $partner->Medical()->save($Medical);
         }elseif($request->type == "nurse"){
             $Nurse = new Nurse([
@@ -138,6 +157,10 @@ class PartnersController extends Controller
             return redirect()->route('admin.partners.index');
     }
 
+    /**
+     * @param Partner $partner
+     * @return Factory|View
+     */
     public function edit(Partner $partner)
     {
         abort_if(Gate::denies('partner_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -148,6 +171,14 @@ class PartnersController extends Controller
         return view('admin.partners.edit', compact('specialties', 'partner'));
     }
 
+    /**
+     * @param UpdatePartnerRequest $request
+     * @param Partner $partner
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig
+     */
     public function update(UpdatePartnerRequest $request, Partner $partner)
     {
         if ( $request->password == null) {
@@ -196,6 +227,10 @@ class PartnersController extends Controller
         return redirect()->route('admin.partners.index');
     }
 
+    /**
+     * @param Partner $partner
+     * @return Factory|View
+     */
     public function show(Partner $partner)
     {
         abort_if(Gate::denies('partner_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -205,6 +240,11 @@ class PartnersController extends Controller
         return view('admin.partners.show', compact('partner'));
     }
 
+    /**
+     * @param Partner $partner
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws Exception
+     */
     public function destroy(Partner $partner)
     {
         abort_if(Gate::denies('partner_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -214,6 +254,10 @@ class PartnersController extends Controller
         return back();
     }
 
+    /**
+     * @param MassDestroyPartnerRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function massDestroy(MassDestroyPartnerRequest $request)
     {
         Partner::whereIn('id', request('ids'))->delete();

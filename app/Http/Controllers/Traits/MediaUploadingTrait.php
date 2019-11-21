@@ -2,10 +2,19 @@
 
 namespace App\Http\Controllers\Traits;
 
+use Exception;
 use Illuminate\Http\Request;
 
+/**
+ * Trait MediaUploadingTrait
+ * @package App\Http\Controllers\Traits
+ */
 trait MediaUploadingTrait
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function storeMedia(Request $request)
     {
 // Validates file size
@@ -32,7 +41,7 @@ trait MediaUploadingTrait
             if (!file_exists($path)) {
                 mkdir($path, 0755, true);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
 
         $file = $request->file('file');

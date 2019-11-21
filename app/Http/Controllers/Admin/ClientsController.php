@@ -13,10 +13,19 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
+/**
+ * Class ClientsController
+ * @package App\Http\Controllers\Admin
+ */
 class ClientsController extends Controller
 {
     use MediaUploadingTrait;
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -83,6 +92,9 @@ class ClientsController extends Controller
         return view('admin.clients.index');
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         abort_if(Gate::denies('client_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -90,6 +102,10 @@ class ClientsController extends Controller
         return view('admin.clients.create');
     }
 
+    /**
+     * @param StoreClientRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreClientRequest $request)
     {
         $client = Client::create($request->all());
@@ -101,6 +117,10 @@ class ClientsController extends Controller
         return redirect()->route('admin.clients.index');
     }
 
+    /**
+     * @param Client $client
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Client $client)
     {
         abort_if(Gate::denies('client_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -108,6 +128,14 @@ class ClientsController extends Controller
         return view('admin.clients.edit', compact('client'));
     }
 
+    /**
+     * @param UpdateClientRequest $request
+     * @param Client $client
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist
+     * @throws \Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig
+     */
     public function update(UpdateClientRequest $request, Client $client)
     {
         $client->update($request->all());
@@ -123,6 +151,10 @@ class ClientsController extends Controller
         return redirect()->route('admin.clients.index');
     }
 
+    /**
+     * @param Client $client
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show(Client $client)
     {
         abort_if(Gate::denies('client_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -130,6 +162,11 @@ class ClientsController extends Controller
         return view('admin.clients.show', compact('client'));
     }
 
+    /**
+     * @param Client $client
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy(Client $client)
     {
         abort_if(Gate::denies('client_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -139,6 +176,10 @@ class ClientsController extends Controller
         return back();
     }
 
+    /**
+     * @param MassDestroyClientRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function massDestroy(MassDestroyClientRequest $request)
     {
         Client::whereIn('id', request('ids'))->delete();
