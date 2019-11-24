@@ -109,11 +109,9 @@ class ClientsController extends Controller
     public function store(StoreClientRequest $request)
     {
         $client = Client::create($request->all());
-
         if ($request->input('avatar', false)) {
             $client->addMedia(storage_path('tmp/uploads/' . $request->input('avatar')))->toMediaCollection('avatar');
         }
-
         return redirect()->route('admin.clients.index');
     }
 

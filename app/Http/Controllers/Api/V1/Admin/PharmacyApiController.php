@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
-use App\Http\Requests\StorePharmacyRequest;
+use App\Http\Requests\StorePharmacyRequestApi;
+
 use App\Http\Requests\UpdatePharmacyRequest;
 use App\Http\Resources\Admin\PharmacyResource;
 use App\Pharmacy;
@@ -24,7 +25,6 @@ class PharmacyApiController extends Controller
      */
     public function index()
     {
-        abort_if(Gate::denies('pharmacy_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new PharmacyResource(Pharmacy::with(['client'])->get());
     }
@@ -33,14 +33,12 @@ class PharmacyApiController extends Controller
      * @param StorePharmacyRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StorePharmacyRequest $request)
+    public function store(StorePharmacyRequestApi $request)
     {
         $pharmacy = Pharmacy::create($request->all());
-
-        if ($request->input('file', false)) {
-            $pharmacy->addMedia(storage_path('tmp/uploads/' . $request->input('file')))->toMediaCollection('file');
+        if ($request->file) {
+            $pharmacy->addMedia(storage_path('tmp/uploads/' . $request->file))->toMediaCollection('file');
         }
-
         return (new PharmacyResource($pharmacy))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);

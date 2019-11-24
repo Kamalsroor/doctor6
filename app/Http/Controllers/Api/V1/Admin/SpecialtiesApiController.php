@@ -21,8 +21,6 @@ class SpecialtiesApiController extends Controller
      */
     public function index()
     {
-        // abort_if(Gate::denies('specialty_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
         return new SpecialtyResource(Specialty::all());
     }
 
@@ -45,7 +43,6 @@ class SpecialtiesApiController extends Controller
      */
     public function show(Specialty $specialty)
     {
-        // abort_if(Gate::denies('specialty_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return new SpecialtyResource($specialty->load(['partners']));
     }
 

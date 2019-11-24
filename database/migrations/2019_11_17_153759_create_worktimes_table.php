@@ -15,8 +15,9 @@ class CreateWorktimesTable extends Migration {
 			$table->timestamps();
 			$table->softDeletes();
 			$table->time('time');
+            $table->string('status')->nullable();
 			$table->integer('workday_id')->unsigned();
-			$table->integer('client_id')->unsigned();
+			$table->integer('client_id')->nullable()->unsigned();
 		});
 	}
 

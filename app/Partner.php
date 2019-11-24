@@ -3,6 +3,9 @@
 namespace App;
 use Hash;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -41,12 +44,12 @@ class Partner extends Model implements HasMedia
     ];
 
     const Waiting_Time_SELECT = [
-        '00:15:00'  => '15 دقيقه',
-        '00:20:00'  => '20 دقيقه',
-        '00:30:00'  => '30 دقيقه',
-        '01:00:00'  => '60 دقيقه',
-        '01:15:00'  => '75 دقيقه',
-        '01:30:00'  => '90 دقيقه',
+        '15'  => '15 دقيقه',
+        '20'  => '20 دقيقه',
+        '30'  => '30 دقيقه',
+        '60'  => '60 دقيقه',
+        '75'  => '75 دقيقه',
+        '90'  => '90 دقيقه',
     ];
 
     protected $fillable = [
@@ -100,7 +103,7 @@ class Partner extends Model implements HasMedia
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function specialty()
     {
@@ -108,7 +111,7 @@ class Partner extends Model implements HasMedia
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function Clinic()
     {
@@ -116,7 +119,7 @@ class Partner extends Model implements HasMedia
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function Medical()
     {
@@ -124,10 +127,20 @@ class Partner extends Model implements HasMedia
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function Nurse()
     {
         return $this->hasOne(Nurse::class, 'partner_id');
     }
+
+
+    /**
+     * @return HasMany
+     */
+    public function WorkDay()
+    {
+        return $this->hasMany(Workday::class , 'partner_id');
+    }
+
 }
