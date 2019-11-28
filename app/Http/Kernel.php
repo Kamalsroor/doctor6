@@ -25,7 +25,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
+use Barryvdh\Cors\HandleCors;
 /**
  * Class Kernel
  * @package App\Http
@@ -38,6 +38,8 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         CheckForMaintenanceMode::class,
         ConvertEmptyStringsToNull::class,
+        HandleCors::class,
+
     ];
 
     protected $middlewareGroups = [
@@ -69,5 +71,6 @@ class Kernel extends HttpKernel
         'bindings'         => SubstituteBindings::class,
         'password.confirm' => RequirePassword::class,
         'auth.basic'       => AuthenticateWithBasicAuth::class,
+        'cors' => HandleCors::class
     ];
 }
