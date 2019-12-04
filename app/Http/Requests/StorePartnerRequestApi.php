@@ -34,9 +34,11 @@ class StorePartnerRequestApi extends FormRequest
             ],
             'phone'    => [
                 'required',
+                'unique:partners',
             ],
             'username' => [
                 'required',
+                'unique:partners',
             ],
             'password' => [
                 'required',
