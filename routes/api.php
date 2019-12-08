@@ -11,7 +11,8 @@ Route::group(['prefix' => 'doctor', 'as' => 'api.', 'namespace' => 'Api\V1\Admin
     Route::get('workdays', 'PartnersApiController@WorkDays');
     Route::get('workdays/{id}', 'PartnersApiController@WorkDayTime');
     Route::post('workdays/done', 'PartnersApiController@WorkDaysClientDone');
-
+    // Route::post('partners/media', 'PartnersApiController@storeMedia')->name('partners.storeMedia');
+    Route::apiResource('partners', 'PartnersApiController');
 });
 
 Route::group(['prefix' => 'client', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:client']], function () {

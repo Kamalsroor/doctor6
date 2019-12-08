@@ -131,9 +131,9 @@ class PartnersApiController extends Controller
      */
     public function show(Partner $partner)
     {
-        abort_if(Gate::denies('partner_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('partner_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new PartnerResource($partner->load(['specialty']));
+        return new PartnerResource($partner->load(['specialty','WorkDay' ,'WorkDay.WorkTimes']));
     }
 
     /**

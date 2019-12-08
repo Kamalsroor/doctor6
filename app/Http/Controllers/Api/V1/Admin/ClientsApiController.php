@@ -13,7 +13,7 @@ use Str;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\StoreClientRequestApi;
-use App\Http\Requests\UpdateClientRequest;
+use App\Http\Requests\UpdateClientRequestApi;
 use App\Http\Resources\Admin\ClientResource;
 use Gate;
 use Illuminate\Http\Request;
@@ -28,6 +28,17 @@ use Illuminate\Database\Eloquent\Model;
 class ClientsApiController extends Controller
 {
     use MediaUploadingTrait;
+
+
+    /**
+     * @return ClientResource
+     */
+    public function index()
+    {
+        return new ClientResource(Client::get());
+    }
+
+
 
     /**
      * @param Request $Request
@@ -81,21 +92,22 @@ class ClientsApiController extends Controller
      * @param Client $client
      * @return ClientResource
      */
-    public function profile(Client $client)
+    public function show(Client $client)
     {
         return new ClientResource($client);
     }
 
     /**
-     * @param UpdateClientRequest $request
+     * @param UpdateClientRequestApi $request
      * @param Client $client
      * @return JsonResponse
      * @throws DiskDoesNotExist
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */
-    public function update(UpdateClientRequest $request, Client $client)
+    public function update(UpdateClientRequestApi $request, Client $client)
     {
+        // dd('test');
         if (!empty($request)) {
             $client->update($request->all());
         }

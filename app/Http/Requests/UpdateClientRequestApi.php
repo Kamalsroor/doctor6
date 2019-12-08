@@ -3,14 +3,14 @@
 namespace App\Http\Requests;
 
 use Gate;
-use Illuminate\Foundation\Http\FormRequest;
+// use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UpdateClientRequest
  * @package App\Http\Requests
  */
-class UpdateClientRequest extends FormRequest
+class UpdateClientRequestApi extends FormRequest
 {
     /**
      * @return bool
